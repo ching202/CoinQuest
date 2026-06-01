@@ -187,3 +187,11 @@ h1 {
 .questButton:hover {
   opacity: 0.9;
 }
+
+.achievementUnlocked {
+  border: 2px solid gold;
+}
+
+.achievementLocked {
+  opacity: 0.5;
+}

@@ -7,6 +7,8 @@ function App() {
   const [quests, setQuests] = useState([])
   const [transactions, setTransactions] = useState([])
   const [savingsGoals, setSavingsGoals] = useState([])
+  const [achievements, setAchievements] = useState([])
+  const [userQuests, setUserQuests] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -18,22 +20,30 @@ function App() {
         questsResponse,
         transactionsResponse,
         savingsGoalsResponse,
+        achievementsResponse,
+        userQuestsResponse,
       ] = await Promise.all([
         supabase.from('profiles').select('*'),
         supabase.from('quests').select('*'),
         supabase.from('transactions').select('*').order('created_at', { ascending: false }),
         supabase.from('savings_goals').select('*').order('created_at', { ascending: false }),
+        supabase.from('achievements').select('*').order('xp_required', { ascending: true }),
+        supabase.from('user_quests').select('*'),
       ])
 
       if (profilesResponse.error) console.error('Profiles error:', profilesResponse.error)
       if (questsResponse.error) console.error('Quests error:', questsResponse.error)
       if (transactionsResponse.error) console.error('Transactions error:', transactionsResponse.error)
       if (savingsGoalsResponse.error) console.error('Savings goals error:', savingsGoalsResponse.error)
+      if (achievementsResponse.error) console.error('Achievements error:', achievementsResponse.error)
+      if (userQuestsResponse.error) console.error('User quests error:', userQuestsResponse.error)
 
       setProfiles(profilesResponse.data || [])
       setQuests(questsResponse.data || [])
       setTransactions(transactionsResponse.data || [])
       setSavingsGoals(savingsGoalsResponse.data || [])
+      setAchievements(achievementsResponse.data || [])
+      setUserQuests(userQuestsResponse.data || [])
       setLoading(false)
     }
 
@@ -44,10 +54,22 @@ function App() {
     if (!profiles.length) return
 
     const profile = profiles[0]
+
+    const alreadyCompleted = userQuests.some(
+      (completedQuest) =>
+        completedQuest.quest_id === quest.id &&
+        completedQuest.user_id === profile.id
+    )
+
+    if (alreadyCompleted) {
+      alert('This quest has already been completed.')
+      return
+    }
+
     const newXp = Number(profile.xp) + Number(quest.xp_reward)
     const newLevel = Math.floor(newXp / 100) + 1
 
-    const { error } = await supabase
+    const { error: profileError } = await supabase
       .from('profiles')
       .update({
         xp: newXp,
@@ -55,8 +77,24 @@ function App() {
       })
       .eq('id', profile.id)
 
-    if (error) {
-      console.error('XP update error:', error)
+    if (profileError) {
+      console.error('XP update error:', profileError)
+      return
+    }
+
+    const { data: completedQuestData, error: userQuestError } = await supabase
+      .from('user_quests')
+      .insert([
+        {
+          user_id: profile.id,
+          quest_id: quest.id,
+          completed: true,
+        },
+      ])
+      .select()
+
+    if (userQuestError) {
+      console.error('User quest insert error:', userQuestError)
       return
     }
 
@@ -68,8 +106,31 @@ function App() {
       )
     )
 
+    setUserQuests((currentUserQuests) => [
+      ...currentUserQuests,
+      ...(completedQuestData || []),
+    ])
+
     alert(`Quest completed! +${quest.xp_reward} XP`)
   }
+
+  const currentProfile = profiles[0]
+
+  const completedQuestIds = userQuests
+    .filter((completedQuest) =>
+      currentProfile
+        ? completedQuest.user_id === currentProfile.id
+        : true
+    )
+    .map((completedQuest) => completedQuest.quest_id)
+
+  const availableQuests = quests.filter(
+    (quest) => !completedQuestIds.includes(quest.id)
+  )
+
+  const completedQuests = quests.filter((quest) =>
+    completedQuestIds.includes(quest.id)
+  )
 
   const totalIncome = transactions
     .filter((transaction) => transaction.type === 'income')
@@ -112,7 +173,7 @@ function App() {
 
             <article className="statCard">
               <span>Available Quests</span>
-              <strong>{quests.length}</strong>
+              <strong>{availableQuests.length}</strong>
             </article>
           </section>
 
@@ -130,22 +191,71 @@ function App() {
           </section>
 
           <section className="section">
-            <h2>Quests</h2>
+            <h2>Available Quests</h2>
             <div className="cardGrid">
-              {quests.map((quest) => (
-                <article className="card" key={quest.id}>
-                  <h3>{quest.title}</h3>
-                  <p>{quest.description}</p>
-                  <p className="reward">{quest.xp_reward} XP Reward</p>
+              {availableQuests.length > 0 ? (
+                availableQuests.map((quest) => (
+                  <article className="card" key={quest.id}>
+                    <h3>{quest.title}</h3>
+                    <p>{quest.description}</p>
+                    <p className="reward">{quest.xp_reward} XP Reward</p>
 
-                  <button
-                    className="questButton"
-                    onClick={() => completeQuest(quest)}
+                    <button
+                      className="questButton"
+                      onClick={() => completeQuest(quest)}
+                    >
+                      Complete Quest
+                    </button>
+                  </article>
+                ))
+              ) : (
+                <p>All quests completed.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="section">
+            <h2>Completed Quests</h2>
+            <div className="cardGrid">
+              {completedQuests.length > 0 ? (
+                completedQuests.map((quest) => (
+                  <article className="card achievementUnlocked" key={quest.id}>
+                    <h3>✓ {quest.title}</h3>
+                    <p>{quest.description}</p>
+                    <p className="reward">{quest.xp_reward} XP Earned</p>
+                  </article>
+                ))
+              ) : (
+                <p>No completed quests yet.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="section">
+            <h2>Achievements</h2>
+            <div className="cardGrid">
+              {achievements.map((achievement) => {
+                const unlocked =
+                  currentProfile &&
+                  Number(currentProfile.xp) >= Number(achievement.xp_required)
+
+                return (
+                  <article
+                    className={`card ${
+                      unlocked ? 'achievementUnlocked' : 'achievementLocked'
+                    }`}
+                    key={achievement.id}
                   >
-                    Complete Quest
-                  </button>
-                </article>
-              ))}
+                    <h3>
+                      {unlocked ? achievement.badge_icon : '🔒'} {achievement.name}
+                    </h3>
+                    <p>{achievement.xp_required} XP Required</p>
+                    <p className="reward">
+                      {unlocked ? 'Unlocked' : 'Locked'}
+                    </p>
+                  </article>
+                )
+              })}
             </div>
           </section>
 
