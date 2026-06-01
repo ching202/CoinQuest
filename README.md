@@ -32,3 +32,9 @@ CoinQuest is a gamified student budgeting app using Supabase and PostgreSQL.
 
 ## Current Progress
 Initial Supabase PostgreSQL database created.
+
+## Current Progress
+- Created Supabase project
+- Built PostgreSQL relational database
+- Added profiles, quests, savings goals, transactions, and user quest tables
+- Inserted sample data for testing
