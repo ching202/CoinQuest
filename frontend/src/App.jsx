@@ -40,6 +40,37 @@ function App() {
     loadCoinQuestData()
   }, [])
 
+  async function completeQuest(quest) {
+    if (!profiles.length) return
+
+    const profile = profiles[0]
+    const newXp = Number(profile.xp) + Number(quest.xp_reward)
+    const newLevel = Math.floor(newXp / 100) + 1
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        xp: newXp,
+        level: newLevel,
+      })
+      .eq('id', profile.id)
+
+    if (error) {
+      console.error('XP update error:', error)
+      return
+    }
+
+    setProfiles((currentProfiles) =>
+      currentProfiles.map((p) =>
+        p.id === profile.id
+          ? { ...p, xp: newXp, level: newLevel }
+          : p
+      )
+    )
+
+    alert(`Quest completed! +${quest.xp_reward} XP`)
+  }
+
   const totalIncome = transactions
     .filter((transaction) => transaction.type === 'income')
     .reduce((total, transaction) => total + Number(transaction.amount), 0)
@@ -106,6 +137,13 @@ function App() {
                   <h3>{quest.title}</h3>
                   <p>{quest.description}</p>
                   <p className="reward">{quest.xp_reward} XP Reward</p>
+
+                  <button
+                    className="questButton"
+                    onClick={() => completeQuest(quest)}
+                  >
+                    Complete Quest
+                  </button>
                 </article>
               ))}
             </div>

@@ -172,3 +172,18 @@ h1 {
     flex-direction: column;
   }
 }
+
+.questButton {
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.questButton:hover {
+  opacity: 0.9;
+}
