@@ -140,6 +140,29 @@ function App() {
     .filter((transaction) => transaction.type === 'expense')
     .reduce((total, transaction) => total + Number(transaction.amount), 0)
 
+  const netBalance = totalIncome - totalExpenses
+
+  const savingsRate =
+    totalIncome > 0
+      ? Math.round((netBalance / totalIncome) * 100)
+      : 0
+
+  let financialHealthScore = 50
+
+  if (totalIncome > totalExpenses) financialHealthScore += 25
+  if (netBalance > 100) financialHealthScore += 15
+  if (netBalance > 250) financialHealthScore += 10
+
+  financialHealthScore = Math.min(financialHealthScore, 100)
+
+  const incomeTransactions = transactions.filter(
+    (transaction) => transaction.type === 'income'
+  ).length
+
+  const expenseTransactions = transactions.filter(
+    (transaction) => transaction.type === 'expense'
+  ).length
+
   return (
     <main className="app">
       <section className="hero">
@@ -175,6 +198,32 @@ function App() {
               <span>Available Quests</span>
               <strong>{availableQuests.length}</strong>
             </article>
+          </section>
+
+          <section className="section">
+            <h2>Financial Analytics</h2>
+            <div className="cardGrid">
+              <article className="card">
+                <h3>Net Balance</h3>
+                <p>${netBalance.toFixed(2)}</p>
+              </article>
+
+              <article className="card">
+                <h3>Savings Rate</h3>
+                <p>{savingsRate}%</p>
+              </article>
+
+              <article className="card">
+                <h3>Financial Health</h3>
+                <p>{financialHealthScore}/100</p>
+              </article>
+
+              <article className="card">
+                <h3>Transaction Summary</h3>
+                <p>{incomeTransactions} income transactions</p>
+                <p>{expenseTransactions} expense transactions</p>
+              </article>
+            </div>
           </section>
 
           <section className="section">
