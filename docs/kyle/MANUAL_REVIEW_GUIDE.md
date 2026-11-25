@@ -1,6 +1,6 @@
 # App.jsx manual-review guide
 
-This is a reading aid, not evidence that Kyle has already performed the review. Latest status: Kyle has not yet read the code.
+This reading aid supported the guided App.jsx comparison. Kyle has now accepted both fixes and retained ST-03/ST-04 as open; see [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md) for the exact confirmation and review scope.
 
 Open the [original App.jsx](evidence/before-fixes/App.jsx) beside [STATIC_TESTING.md](STATIC_TESTING.md). The original file is the basis for the findings and original line numbers. Use the [corrected App.jsx](../../frontend/src/App.jsx) afterward to compare changes.
 

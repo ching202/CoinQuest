@@ -10,7 +10,7 @@
 
 **Correction update:** CQ-D001 and CQ-D002 are now corrected and retested locally: 37 component and 18 SQL cases pass. Live verification and final team acceptance remain pending. See [CORRECTION_REVIEW.md](CORRECTION_REVIEW.md). The source line numbers and original observations below refer to the archived baseline; ST-03/ST-04 remain open.
 
-**Status:** AI-assisted review draft with guided discussion and demonstrations recorded. Kyle explicitly says he has not yet read the code and still needs to review the fixes. The required student manual review and final dispositions remain pending; use [MANUAL_REVIEW_GUIDE.md](MANUAL_REVIEW_GUIDE.md).
+**Status:** Guided, AI-assisted source comparison completed; Kyle accepted CQ-D001/CQ-D002 and explicitly chose to leave ST-03/ST-04 open. See [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md) for his exact decision and review scope.
 
 ## What static testing means
 
@@ -42,7 +42,7 @@ Line numbers refer to the archived original baseline file. Inspect the linked co
 - **Recommendation:** After inspecting the actual schema and policies, use an atomic database operation that records completion and updates XP together, with duplicate protection. Swapping the two client writes alone merely changes which partial result can remain.
 - **Related report:** Bashir's CQ-D001, BB-17, and SV-02 in PR #9.
 - **Confirmation design:** Start at XP 90, reward 10. Allow the profile update and fail the completion insert. Require stored XP to remain 90 when completion fails. Then verify successful completion and repeated attempts.
-- **Current status:** Locally corrected and retested. Original failure preserved; local SQL rollback passes. Code is committed in draft PR #10; human review and live integration verification remain pending.
+- **Current status:** Locally corrected and retested. Original failure preserved; local SQL rollback passes. Kyle accepted the correction after the guided comparison. Code is committed in PR #10; partner review and live integration verification remain pending.
 
 ### ST-02: Completion classification ignores the completed flag
 
@@ -53,7 +53,7 @@ Line numbers refer to the archived original baseline file. Inspect the linked co
 - **Recommendation:** Consistently check completion status and decide whether completion updates an existing incomplete row or inserts a new one. Inspect separate indexes/triggers and respect uniqueness rules before choosing a write strategy.
 - **Related report:** Bashir's CQ-D002, BB-16, and SV-01 in PR #9.
 - **Confirmation design:** Compare false, true, absent, and another user's completion records. A false row should remain available under the proposed rule.
-- **Current status:** Locally corrected and retested, including completion of existing false/null rows. The real column's false default was verified read-only. Live integration verification and final team acceptance remain pending. See CORRECTION_REVIEW.md.
+- **Current status:** Locally corrected and retested, including completion of existing false/null rows. The real column's false default was verified read-only. Kyle accepted the correction. Partner review and live integration verification remain pending. See CORRECTION_REVIEW.md.
 
 ### ST-03: Failed transaction retrieval can look like a true zero balance
 
@@ -64,7 +64,7 @@ Line numbers refer to the archived original baseline file. Inspect the linked co
 - **Recommendation:** Track read failures separately and display an unavailable/retry message. Preserve the distinction between a successful empty response and an error.
 - **Related investigation:** Bashir's BB-18 / SV-03; let Bashir decide whether to create another defect report.
 - **Confirmation design:** Compare a successful empty transaction response with an error response and check that the UI distinguishes them after correction.
-- **Final status for this review:** Open recommendation. No correction applied; visible-error requirement needs team agreement. A passing characterization test of the current fallback does not close this finding.
+- **Final status for this review:** Open by Kyle's explicit decision. No correction applied; visible-error requirement needs team agreement. A passing characterization test of the current fallback does not close this finding.
 
 ### ST-04: Savings progress has no guard for a zero target
 
@@ -74,7 +74,7 @@ Line numbers refer to the archived original baseline file. Inspect the linked co
 - **Proposed severity / priority:** Medium / P2 if reachable with supported data; otherwise a robustness recommendation.
 - **Recommendation:** The inspected table definition has `target_amount numeric(10, 2) not null` and no positive-target check. Inspect any separate triggers/write-path rules; require a positive target or define explicit handling for invalid targets before division.
 - **Confirmation design:** If supported, test zero and negative targets, and preserve below/at/above-positive-target cases.
-- **Final status for this review:** Source-review candidate strengthened by the absence of a positive-target check in the displayed table definition. No live insert, trigger review, or runtime invalid-target reproduction was performed. No correction applied.
+- **Final status for this review:** Left open by Kyle; source-review candidate strengthened by the absence of a positive-target check in the displayed table definition. No live insert, trigger review, or runtime invalid-target reproduction was performed. No correction applied.
 
 ## Automated static analysis
 
@@ -99,19 +99,17 @@ A separate production build is a build check, not a substitute for static review
 
 The audit concerns package advisories, not eleven proven exploitable defects in App.jsx. The listed top-level package versions match those in the original lockfile. Remediation was not applied as part of this testing setup. Status: open for separate dependency review; assess applicable advisories, update compatible packages, and rerun lint/build/tests after any change. This does not replace the required source review.
 
-## Kyle's personal review record
+## Kyle's guided review record
 
-The record below distinguishes the guided discussion from a completed independent full-file review. AI assistance must not be relabeled as completed personal manual testing.
-
-- Guided review date: **November 24, 2026**. Full personal source review: **Pending**.
-- Source version discussed: `ae78c7005733e36c0e08c5d921938a7873c3181a`; relevant snippets and test results were shown. Full-file personal review is not claimed.
-- ST-01 explanation: **Kyle selected the wording below** after the demonstration. Final severity, repair design, and team disposition: **Pending**.
-- ST-02 discussion: **Kyle supplied the demonstration transcript and asked whether the explanation matched it; the two failed assertions were explained.** The subsequent read-only schema review confirmed a false default. Final accept/revise/reject decision and live integration reproduction: **Pending**.
-- ST-03 accepted / revised / rejected and intended error behavior: **Pending**
-- ST-04 accepted / revised / rejected and target constraints: **Pending**
-- ESLint rerun and evidence checked: **Pending**
-- Corrections made by the assistant locally: **CQ-D001 and CQ-D002; Kyle's review pending**
-- Correction commits: **Published in draft PR #10; see GITHUB_HANDOFF.md**. Local confirmation: **37 component and 18 SQL cases pass**. Human review/live verification: **Pending**.
+- Review date: **November 24, 2026**. Method: **guided, AI-assisted source comparison**.
+- Original and corrected completion logic, classification, loading/error fallback, calculations, rendering and savings progress were covered in the walkthrough. The scope and exact confirmation are in [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md).
+- ST-01 / CQ-D001: **Fix accepted.** Save reward and completion together; preserve consistent state and prevent repeated rewards.
+- ST-02 / CQ-D002: **Fix accepted.** Require a true completion flag; retain false/null rows as available and reuse them when completing.
+- ST-03: **Leave open**, as Kyle requested. No error-display correction is claimed.
+- ST-04: **Leave open**, as Kyle requested. No invalid-target correction is claimed.
+- Original XP explanation: **Retained unchanged**, at Kyle's request.
+- Automated checks: **Executed by Codex**; recorded results are 37 component and 18 local SQL cases passing, clean lint and successful build. No student command rerun is claimed.
+- PR status and commits: see [GITHUB_HANDOFF.md](GITHUB_HANDOFF.md). Partner review, live deployment and integration verification remain separate.
 
 ### Kyle's selected CQ-D001 explanation
 

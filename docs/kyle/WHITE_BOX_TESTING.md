@@ -1,6 +1,6 @@
 # White-box testing and confirmation results
 
-Owner: Kyle Kitching. Date: November 24, 2026. Preparation/execution: AI-assisted; Kyle's personal review and rerun remain pending.
+Owner: Kyle Kitching. Date: November 24, 2026. Preparation/execution: AI-assisted. Kyle has accepted the two corrections after the guided source/evidence comparison; no personal command rerun is claimed. See REVIEW_DECISIONS.md.
 
 ## Baseline and corrected source
 
@@ -91,4 +91,4 @@ PGlite has one connection, so this run does not test competing live transactions
 
 A lost response may occur after a successful commit. The UI therefore says it could not confirm completion, and retry asks for the saved result without another reward. The tests establish local idempotency, not real network behavior.
 
-ST-03 and ST-04 remain open. Green tests and coverage do not close untested requirements. Kyle's manual review, final AI-use decisions, Bashir's defect updates, live verification, and presentation remain separate work.
+ST-03 and ST-04 remain open. Green tests and coverage do not close untested requirements. Kyle's guided review and decisions are recorded. Bashir's review/defect updates, live verification and the shared presentation remain separate work.

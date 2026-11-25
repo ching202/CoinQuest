@@ -6,7 +6,7 @@ CoinQuest is a gamified student budgeting application designed to help users bui
 
 Kyle's [testing walkthrough](docs/kyle/START_HERE.md) links the static review, automated tests, before/after evidence, coverage, and AI-use record. See the [partner contribution summary](docs/kyle/CONTRIBUTION_SUMMARY.md) and [handoff to Bashir](docs/kyle/BASHIR_HANDOFF.md).
 
-This branch proposes an atomic quest-completion RPC. The automated tests use synthetic local data and need no live Supabase access. Live quest completion on this branch requires the reviewed SQL migration; deployment and human review are still pending. Read [CORRECTION_REVIEW.md](docs/kyle/CORRECTION_REVIEW.md) before using the changed frontend against Supabase.
+This branch proposes an atomic quest-completion RPC. The automated tests use synthetic local data and need no live Supabase access. Live quest completion on this branch requires the reviewed SQL migration; Kyle has accepted the two fixes after guided review; partner review, deployment and live verification remain pending. Read [CORRECTION_REVIEW.md](docs/kyle/CORRECTION_REVIEW.md) before using the changed frontend against Supabase.
 
 ## Features
 

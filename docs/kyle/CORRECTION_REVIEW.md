@@ -1,6 +1,6 @@
 # Local correction review: CQ-D001 and CQ-D002
 
-Prepared November 24, 2026 by Codex with Kyle's continuing instructions. Status: implemented and tested locally; human review, live database inspection, deployment and integration verification pending. Bashir retains ownership/credit for defect documentation. See [GITHUB_HANDOFF.md](GITHUB_HANDOFF.md) for current GitHub publication status.
+Prepared November 24, 2026 by Codex with Kyle's continuing instructions. Status: implemented and tested locally; accepted by Kyle after guided review; partner review, live database inspection, deployment and integration verification pending. Bashir retains ownership/credit for defect documentation. See [GITHUB_HANDOFF.md](GITHUB_HANDOFF.md) for current GitHub publication status.
 
 ## Correction and reasoning
 
@@ -51,7 +51,7 @@ The function uses SECURITY INVOKER and a fixed empty search_path. It adds no gra
 4. With agreed synthetic/test records, verify success, incomplete-row completion, retry, forced failure in a test environment, and competing requests. Do not inject failure triggers into the shared live project casually.
 5. Attach real results to Bashir's reports before marking them verified/closed.
 
-The local files are ready for review. Live deployment is a separate action and is not claimed completed.
+Kyle accepted both fixes and chose to leave ST-03/ST-04 open; see [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md). The files are ready for partner review. Live deployment is a separate action and is not claimed completed.
 
 ## Sources used in the implementation
 

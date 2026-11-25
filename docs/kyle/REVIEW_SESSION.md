@@ -53,7 +53,7 @@ Suggested explanation for Kyle to review (not yet selected):
 
 At lines 34-46, the app logs a read error to the console and uses an empty array when transaction data is absent. The totals for an empty array are zero. Consequently, unavailable data and a genuine empty transaction list can produce the same financial display.
 
-Recommendation for team review: track the failure separately and show a visible unavailable/retry state. The existing WB-14 characterization confirms the current fallback; its passing result does not approve that behavior or close ST-03. Kyle's acceptance of this recommendation remains pending.
+Recommendation for team review: track the failure separately and show a visible unavailable/retry state. The existing WB-14 characterization confirms the current fallback; its passing result does not approve that behavior or close ST-03. Kyle subsequently chose to keep ST-03 open; no error-display correction is claimed.
 
 ### ST-04: zero savings target
 
@@ -63,10 +63,14 @@ The later schema inspection found no positive-target check in the displayed tabl
 
 ## Updated completion status
 
-- Static report and lint evidence: prepared; personal review/final dispositions pending.
+- Static report and lint evidence: prepared; guided source comparison and Kyle's acceptance/open-finding decisions recorded in REVIEW_DECISIONS.md.
 - Automated setup, results, and coverage: original two failures preserved; corrected local suite has 37 passing component cases and 18 passing SQL cases.
 - Defect verification: local corrections and confirmation complete; live inspection, deployment, integration verification and final team acceptance pending.
-- AI use: four actual activities and real prompts are recorded; Kyle's technical review decisions remain pending. The assignment does not require separate chats.
+- AI use: four actual activities and real prompts are recorded, together with Kyle's explicit acceptance of both fixes and decision to leave ST-03/ST-04 open. The assignment does not require separate chats.
 - Repository: see GITHUB_HANDOFF.md for publication status. No merge or live database deployment is claimed.
 
 Relevant table definitions were inspected earlier. The subsequent dashboard connection failed. Before deploying the prepared local corrections, inspect separate indexes, triggers, functions, and access rules for the chosen write strategy. Presentation work remains a later shared task.
+
+## Later guided review decision
+
+After comparing the saved explanations with the original and corrected App.jsx, Kyle accepted both fixes and agreed to leave ST-03/ST-04 open. See [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md). Earlier passages describe the state at the time of the original demonstrations.

@@ -46,14 +46,14 @@ The test:baseline script retains its earlier name for the 28 ordinary/characteri
 
 ## What to finish with Bashir
 
-- Personally review the original findings and local corrections, and record actual accept/revise/reject decisions in [AI_TESTING_LOG.md](AI_TESTING_LOG.md). The assistant has not signed your manual-review checklist.
+- Kyle's guided review is recorded in [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md): both fixes accepted; ST-03/ST-04 retained as open. Keep those dispositions with the final report.
 - Give Bashir the before/after evidence for CQ-D001 and CQ-D002. Suggested status: **locally corrected and retested; live integration verification pending**. Bashir owns the final defect records.
 - Once the dashboard is reachable, complete the database preflight, agree on deployment, and test the real app with controlled data. Do not deploy only the frontend or silently repair historical XP.
-- Review ST-03 (read errors displayed as empty data) and ST-04 (zero savings target). Those findings remain open.
-- Four actual AI-supported activities are now documented with their real prompts. Finish your technical review decisions; separate chats are not required.
-- Review the draft PR with Bashir before treating it as ready. Presentation remains a later joint step.
+- ST-03 (read errors displayed as empty data) and ST-04 (zero savings target) remain open by Kyle's decision; include them in the final quality assessment.
+- Four actual AI-supported activities are documented with real prompts, response use, evidence and Kyle's review decisions. Separate chats are not required.
+- PR #10 is ready for Bashir's review. Presentation remains a later joint step; live deployment/verification is still pending.
 
-Kyle's latest review answers are recorded: he has not yet read the code and still needs to review the fixes. Start with [MANUAL_REVIEW_GUIDE.md](MANUAL_REVIEW_GUIDE.md). The [contribution summary](CONTRIBUTION_SUMMARY.md) and [Bashir handoff](BASHIR_HANDOFF.md) distinguish completed technical work from remaining student/team work.
+Kyle's latest confirmation accepts both fixes and leaves ST-03/ST-04 open after the guided comparison. The [manual-review guide](MANUAL_REVIEW_GUIDE.md) remains available as a reference. The [contribution summary](CONTRIBUTION_SUMMARY.md) and [Bashir handoff](BASHIR_HANDOFF.md) distinguish completed technical work from remaining student/team work.
 
 ## Applying the package
 

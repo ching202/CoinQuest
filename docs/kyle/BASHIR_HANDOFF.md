@@ -6,8 +6,8 @@ Kyle's assigned deliverables are in docs/kyle. Start with [START_HERE.md](START_
 
 | Report | Original evidence | Local correction/confirmation | Suggested status |
 | --- | --- | --- | --- |
-| CQ-D001 | Stored XP 100 after failed completion insert; screen XP 90 | One RPC; SQL-D01 forces failure after XP update and verifies XP 90/no completion; retry gets no duplicate reward | Locally corrected and retested; human review/live verification pending |
-| CQ-D002 | completed=false hides the available button and creates a completed card | True-flag classification; component test verifies availability then completion; SQL tests reuse false/null rows | Locally corrected and retested; human review/live verification pending |
+| CQ-D001 | Stored XP 100 after failed completion insert; screen XP 90 | One RPC; SQL-D01 forces failure after XP update and verifies XP 90/no completion; retry gets no duplicate reward | Accepted by Kyle; locally corrected and retested; partner review/live verification pending |
+| CQ-D002 | completed=false hides the available button and creates a completed card | True-flag classification; component test verifies availability then completion; SQL tests reuse false/null rows | Accepted by Kyle; locally corrected and retested; partner review/live verification pending |
 
 Original full results: 28 pass / 2 fail. Current component results: 37 pass / 0 fail. Local SQL results: 18 pass / 0 fail. App coverage: 97.97% statements and 98.64% branches. Lint and build passed. Full evidence and original source are retained.
 
@@ -21,7 +21,7 @@ The real completed column was observed as nullable with default false. This conf
 4. Update stale setup notes after using the working test environment. The new automated tests run without live Supabase, but browser quest completion on the corrected app needs the proposed migration.
 5. Keep ST-03 (failed read looks empty) and ST-04 (zero target) as open findings unless the team agrees and verifies a correction.
 
-Kyle still needs to read App.jsx and record his AI-review decisions. Presentation/demo work stays shared and comes later.
+Kyle has completed the guided App.jsx comparison, accepted both fixes and explicitly left ST-03/ST-04 open. His decisions are in [REVIEW_DECISIONS.md](REVIEW_DECISIONS.md). Presentation/demo work stays shared and comes later.
 
 ## Run the existing automated checks
 
@@ -37,4 +37,4 @@ npm run build
 
 Use Node 24.22.3 or another supported version from package.json. No live credentials are needed for these tests.
 
-Do not apply the SQL migration simply to run this suite. No live changes were made; inspect the preflight and CORRECTION_REVIEW.md before considering deployment. The current PR should remain a draft while human review and that deployment dependency are unresolved.
+Do not apply the SQL migration simply to run this suite. No live changes were made; inspect the preflight and CORRECTION_REVIEW.md before considering deployment. PR #10 is ready for your review. Resolve the deployment dependency before treating the corrected app as ready for live quest completion; no merge or live verification is claimed.
