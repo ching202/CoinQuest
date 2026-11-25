@@ -1,0 +1,19 @@
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+
+ ↓ src/App.defects.test.jsx > Defect regression checks > CQ-D001 / WB-D01 failed completion must not retain an XP reward
+ ✓ src/App.defects.test.jsx > Defect regression checks > CQ-D002 / WB-D02 an incomplete record remains available and can be completed 135ms
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-15 blocks further clicks while completion is pending
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-16 retries after an error and uses the server values, even if local XP is stale
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-17 reconciles a completion already saved by another session without another reward
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-18 handles an incomplete RPC response: null
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-18 handles an incomplete RPC response: {"profile":{"xp":100,"level":2}}
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-19 keeps null completion flags available and preserves unrelated completion cards
+ ↓ src/App.defects.test.jsx > Defect regression checks > WB-20 shows no completed quests when no current profile exists
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 8 skipped (9)
+   Start at  19:25:32
+   Duration  2.16s (environment 67%, setup 16%, import 7%, tests 7%, transform 2%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/outputs/CoinQuest-live-demo/fixed-incomplete-results.json

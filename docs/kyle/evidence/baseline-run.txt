@@ -1,0 +1,16 @@
+
+> frontend@0.0.0 test:baseline
+> vitest run src/App.test.jsx --outputFile=../docs/kyle/evidence/baseline-results.json
+
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+
+ ✓ src/App.test.jsx (28 tests) 857ms
+
+ Test Files  1 passed (1)
+      Tests  28 passed (28)
+   Start at  18:17:13
+   Duration  4.38s (environment 58%, tests 22%, setup 13%, import 3%, transform 3%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/docs/kyle/evidence/baseline-results.json
+Exit code: 0

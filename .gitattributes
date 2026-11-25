@@ -1,0 +1,2 @@
+# Generated reporters may reintroduce formatting whitespace on subsequent runs.
+docs/kyle/evidence/** -whitespace

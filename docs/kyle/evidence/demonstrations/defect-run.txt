@@ -1,0 +1,35 @@
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+
+ ├ù src/App.defects.test.jsx > Open defect reproductions > CQ-D001 / WB-D01 failed completion must not retain an XP reward 155ms
+   ΓåÆ expected 100 to be 90 // Object.is equality
+ Γåô src/App.defects.test.jsx > Open defect reproductions > CQ-D002 / WB-D02 an incomplete record must remain available (schema assumption)
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 1 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/App.defects.test.jsx > Open defect reproductions > CQ-D001 / WB-D01 failed completion must not retain an XP reward
+AssertionError: expected 100 to be 90 // Object.is equality
+
+- Expected
++ Received
+
+- 90
++ 100
+
+ Γ¥» src/App.defects.test.jsx:30:45
+     28|     expect(window.alert).not.toHaveBeenCalled()
+     29|     // Current App saves 100 in the service while the screen still shoΓÇª
+     30|     expect(service.database.profiles[0].xp).toBe(90)
+       |                                             ^
+     31|   })
+     32|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/1]ΓÄ»
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  18:37:16
+   Duration  1.88s (environment 64%, setup 16%, tests 9%, import 7%, transform 4%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/outputs/CoinQuest-live-demo/defect-results.json

@@ -1,0 +1,59 @@
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+
+ ↓ src/App.defects.test.jsx > Open defect reproductions > CQ-D001 / WB-D01 failed completion must not retain an XP reward
+ × src/App.defects.test.jsx > Open defect reproductions > CQ-D002 / WB-D02 an incomplete record must remain available (schema assumption) 101ms
+   → expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+   → expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <h3>
+  ✓
+  Plan a budget
+</h3> instead
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/App.defects.test.jsx > Open defect reproductions > CQ-D002 / WB-D02 an incomplete record must remain available (schema assumption)
+Error: expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ❯ src/App.defects.test.jsx:42:86
+     40|     const available = (await screen.findByRole('heading', { name: 'Ava…
+     41|     const completed = screen.getByRole('heading', { name: 'Completed Q…
+     42|     expect.soft(within(available).queryByRole('button', { name: 'Compl…
+       |                                                                                      ^
+     43|     expect.soft(within(completed).queryByText('✓ Plan a budget')).not.…
+     44|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/App.defects.test.jsx > Open defect reproductions > CQ-D002 / WB-D02 an incomplete record must remain available (schema assumption)
+Error: expect(element).not.toBeInTheDocument()
+
+expected document not to contain element, found <h3>
+  ✓
+  Plan a budget
+</h3> instead
+ ❯ src/App.defects.test.jsx:43:71
+     41|     const completed = screen.getByRole('heading', { name: 'Completed Q…
+     42|     expect.soft(within(available).queryByRole('button', { name: 'Compl…
+     43|     expect.soft(within(completed).queryByText('✓ Plan a budget')).not.…
+       |                                                                       ^
+     44|   })
+     45| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 skipped (2)
+   Start at  18:46:51
+   Duration  2.12s (environment 65%, setup 17%, import 11%, tests 5%, transform 2%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/outputs/CoinQuest-live-demo/incomplete-quest-results.json

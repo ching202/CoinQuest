@@ -1,0 +1,29 @@
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+      Coverage enabled with v8
+
+ ✓ src/App.defects.test.jsx (9 tests) 768ms
+ ✓ src/App.test.jsx (28 tests) 1016ms
+
+ Test Files  2 passed (2)
+      Tests  37 passed (37)
+   Start at  19:24:21
+   Duration  6.02s (environment 62%, tests 17%, setup 13%, import 5%, transform 3%, worker 1%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/docs/kyle/evidence/test-results.json
+ % Coverage report from v8
+-------------|---------|----------|---------|---------|-------------------
+File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------|---------|----------|---------|---------|-------------------
+All files    |   94.17 |    93.58 |     100 |    93.4 |
+ App.jsx     |   97.97 |    98.64 |     100 |    97.7 | 69-70
+ main.jsx    |       0 |      100 |     100 |       0 | 6
+ supabase.js |       0 |        0 |     100 |       0 | 3-6
+-------------|---------|----------|---------|---------|-------------------
+
+=============================== Coverage summary ===============================
+Statements   : 94.17% ( 97/103 )
+Branches     : 93.58% ( 73/78 )
+Functions    : 100% ( 26/26 )
+Lines        : 93.4% ( 85/91 )
+================================================================================

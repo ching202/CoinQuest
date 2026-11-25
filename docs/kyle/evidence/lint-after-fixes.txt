@@ -1,0 +1,4 @@
+Command: node node_modules/eslint/bin/eslint.js .
+Working directory: frontend
+Observed exit code: 0
+Diagnostics: none

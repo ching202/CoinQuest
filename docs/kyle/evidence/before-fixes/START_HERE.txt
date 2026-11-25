@@ -1,0 +1,146 @@
+# Walkthrough: static review, then automated tests
+
+This is a working starter for Kyle's static-testing and white-box-testing sections. The original App.jsx is unchanged. All work is based on main commit `ae78c7005733e36c0e08c5d921938a7873c3181a`, independently of Bashir's unmerged documentation PR. Changes were prepared on local branch `tests/kyle-static-whitebox`; nothing has been pushed or posted.
+
+After the demonstrations, read [the guided review notes](REVIEW_SESSION.md) for the observed results, coverage gaps, remaining static findings, and Kyle's recorded wording choice.
+
+## 1. Read before running
+
+Open [App.jsx](../../frontend/src/App.jsx) beside [STATIC_TESTING.md](STATIC_TESTING.md).
+
+Start with `completeQuest` at line 53. Follow this sequence on paper:
+
+1. No profile? Return without writing anything.
+2. Matching completion record? Alert and return.
+3. Compute the new XP and level.
+4. Update the profile in the database.
+5. If that update fails, return.
+6. Insert the quest-completion record.
+7. If that insert fails, return.
+8. Update React's local state and show a success alert.
+
+The key review question is: **At step 7, what happened to the data saved at step 4?** It was already saved. This is why ST-01 exists. A successful first write and failed second write can leave inconsistent data.
+
+Next read lines 58-62 and 119-125. These use matching IDs to identify completions. Ask: **Where does the code check whether `completed` is true?** It does not. The subsequent [read-only schema review](SCHEMA_REVIEW.md) confirmed that the real completed column defaults to false, supporting this test input.
+
+Read the other findings and fill the personal-review record with your actual decisions. You can disagree with an AI suggestion; give your reason and evidence. Do not sign off on a review you have not performed.
+
+## 2. Run automated static analysis
+
+Use Node 24.22.3 (the verified version) or another version allowed by `frontend/package.json`. A supported Node installation normally supplies npm. Open a terminal in the project's frontend folder:
+
+```sh
+npm ci
+npm run lint
+```
+
+`npm ci` installs exactly the locked dependencies. `npm run lint` runs ESLint. An exit code of 0 with no diagnostics is the recorded baseline result. ESLint does not execute the dashboard and does not establish whether the two database writes are atomic.
+
+The assistant environment used `pnpm dlx npm@11.19.1` in place of `npm` because npm was not on PATH. You do not need that wrapper when npm works normally on your machine.
+
+## 3. Understand the test tools
+
+- **Vitest** discovers cases, executes them, and checks assertions.
+- **React Testing Library** renders the real React component and finds its visible output.
+- **jsdom** supplies a simulated document; no browser window opens.
+- **The Supabase mock** supplies known rows and controlled errors without contacting a backend.
+- **V8 coverage** records which source statements, branches, and functions executed.
+
+The setup follows the official [Vitest configuration](https://vitest.dev/config/), [coverage](https://vitest.dev/guide/coverage.html), [module mocking](https://vitest.dev/guide/mocking/modules), and [React Testing Library setup](https://testing-library.com/docs/react-testing-library/setup/) documentation.
+
+## 4. Read one test slowly
+
+Open [App.test.jsx](../../frontend/src/App.test.jsx) and find WB-02.
+
+Each case follows **Arrange -> Act -> Assert**:
+
+1. Arrange: build known test data, such as an empty transaction list.
+2. Act: render App and wait until its loading effect completes.
+3. Assert: check that the dashboard displays the expected balance, percentages, and counts.
+
+WB-04 supplies two income records totaling $1,050 and two expense records totaling $250. The expected net balance is $800. The rounded savings rate is 76%. The test checks these values as constants, rather than calculating them with App's own formula, so it can catch an incorrect implementation.
+
+This is white-box design because we read the filter/reduce/map operations and selected zero, one, and several records to exercise those paths. An assertion about visible text can still be part of a white-box test.
+
+Run only this case:
+
+```sh
+npm test -- -t "WB-04"
+```
+
+Then run the ordinary baseline cases:
+
+```sh
+npm run test:baseline
+```
+
+The verified result is 28 passing cases. This command omits the two defect cases on purpose; it is useful for learning and does not represent the full result.
+
+## 5. Read the red tests
+
+Open [App.defects.test.jsx](../../frontend/src/App.defects.test.jsx), then run:
+
+```sh
+npm run test:defects
+```
+
+The full run is:
+
+```sh
+npm test
+```
+
+The original App currently produces **28 passed, 2 failed, 0 skipped**. The failures are genuine assertions, not skipped tests or tests configured to pass when they fail.
+
+- CQ-D001 expects stored XP to remain 90 after the completion insert fails; the simulated service actually stores 100. The screen still shows 90. This is the partial-write finding from your source review.
+- CQ-D002 expects an incomplete record to leave the quest available; the rendered component instead puts it in Completed Quests. The real schema's false default was subsequently confirmed; live integration reproduction remains pending.
+
+Exit code 1 is expected while these defects/proposed requirements remain unresolved. Do not change the expected XP to 100 just to make the suite green. First agree on the intended behavior, make a justified correction, and rerun the case. If the schema proves a state unsupported, document the evidence and reclassify the case openly.
+
+## 6. Read coverage with the failures in view
+
+```sh
+npm run test:coverage
+```
+
+The report is written even though the two cases fail. Open [the HTML coverage report](evidence/coverage/index.html) and click App.jsx. Its baseline coverage is 96.73% statements and 92.18% branches. The whole-source totals are lower because the browser bootstrap and real service initialization are not exercised.
+
+Coverage answers **which code ran**, while assertions answer **whether the observed behavior met expectations**. This project demonstrates the difference: high coverage and two failed checks can coexist.
+
+## 7. Know which files do what
+
+| File | Purpose |
+| --- | --- |
+| frontend/package.json and package-lock.json | Test commands, compatible Node range, and locked tools |
+| frontend/vitest.config.js | DOM environment, setup file, results, and coverage settings |
+| frontend/src/test/setup.js | DOM matchers, cleanup, alert replacement, and fetch guard |
+| frontend/src/test/supabaseMock.js | Synthetic fixtures and the limited simulated service |
+| frontend/src/App.test.jsx | Ordinary and characterization cases |
+| frontend/src/App.defects.test.jsx | Two open defect reproductions |
+| docs/kyle/STATIC_TESTING.md | Review findings and your personal-review checklist |
+| docs/kyle/WHITE_BOX_TESTING.md | Cases, results, source-path mapping, coverage, and limitations |
+| docs/kyle/AI_TESTING_LOG.md | Actual AI request and pending human review decisions |
+| docs/kyle/evidence/ | Saved lint/build/test/audit results and coverage |
+
+The full source snapshot is runnable without copying anything into your existing repository. It excludes installed dependencies, build output, and Git metadata; run npm ci after extracting it. The accompanying patch applies only the testing changes to an existing checkout based on the recorded baseline. It does not delete or modify Bashir's documentation.
+
+To integrate the patch, first inspect your working tree with `git status`. Keep unrelated work on its current branch. On a clean checkout of the application baseline, create a branch and check the patch before applying it:
+
+```sh
+git switch -c tests/kyle-static-whitebox
+git apply --check /path/to/CoinQuest-kyle-testing.patch
+git apply /path/to/CoinQuest-kyle-testing.patch
+```
+
+Use the actual patch location. If Git reports conflicting files, inspect the differences rather than forcing the patch. The ZIP also contains the source and saved coverage for comparison.
+
+## 8. What to finish yourself and with Bashir
+
+- Read the findings, record your own decisions, and rerun lint/tests.
+- Confirm the intended financial rules and database constraints before final acceptance.
+- Share the reproduction evidence with Bashir so he can update CQ-D001/CQ-D002, retaining his discovery credit.
+- Preserve the original failures; implement agreed corrections and save confirmation/regression evidence separately.
+- Commit small completed pieces and open your own PR when ready. Suggested pieces: static review; testing setup and cases; results and coverage documentation.
+- Keep presentation work for the later joint session.
+
+No live Supabase project is required for these component tests. The restored project and two table definitions have now been inspected read-only, as recorded in SCHEMA_REVIEW.md. Real-service behavior still needs testing before claiming integration results. The course's human manual-review requirement and three focused AI-use requirement are not automatically completed by receiving these files.
