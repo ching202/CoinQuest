@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase } from './supabase'
 import './App.css'
 
@@ -10,6 +10,9 @@ function App() {
   const [achievements, setAchievements] = useState([])
   const [userQuests, setUserQuests] = useState([])
   const [loading, setLoading] = useState(true)
+  const [completing, setCompleting] = useState(false)
+  const [completionError, setCompletionError] = useState('')
+  const completionInFlight = useRef(false)
 
   useEffect(() => {
     async function loadCoinQuestData() {
@@ -51,14 +54,15 @@ function App() {
   }, [])
 
   async function completeQuest(quest) {
-    if (!profiles.length) return
+    if (!profiles.length || completionInFlight.current) return
 
     const profile = profiles[0]
 
     const alreadyCompleted = userQuests.some(
       (completedQuest) =>
         completedQuest.quest_id === quest.id &&
-        completedQuest.user_id === profile.id
+        completedQuest.user_id === profile.id &&
+        completedQuest.completed === true
     )
 
     if (alreadyCompleted) {
@@ -66,61 +70,55 @@ function App() {
       return
     }
 
-    const newXp = Number(profile.xp) + Number(quest.xp_reward)
-    const newLevel = Math.floor(newXp / 100) + 1
+    completionInFlight.current = true
+    setCompleting(true)
+    setCompletionError('')
 
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        xp: newXp,
-        level: newLevel,
+    try {
+      // One database transaction owns both writes and calculates XP from stored values.
+      const { data, error } = await supabase.rpc('complete_quest', {
+        p_user_id: profile.id,
+        p_quest_id: quest.id,
       })
-      .eq('id', profile.id)
+      if (error) throw error
+      if (!data?.profile || !data?.completion) {
+        throw new Error('Missing quest-completion result')
+      }
 
-    if (profileError) {
-      console.error('XP update error:', profileError)
-      return
-    }
-
-    const { data: completedQuestData, error: userQuestError } = await supabase
-      .from('user_quests')
-      .insert([
-        {
-          user_id: profile.id,
-          quest_id: quest.id,
-          completed: true,
-        },
-      ])
-      .select()
-
-    if (userQuestError) {
-      console.error('User quest insert error:', userQuestError)
-      return
-    }
-
-    setProfiles((currentProfiles) =>
-      currentProfiles.map((p) =>
-        p.id === profile.id
-          ? { ...p, xp: newXp, level: newLevel }
-          : p
+      setProfiles((currentProfiles) =>
+        currentProfiles.map((p) =>
+          p.id === profile.id
+            ? { ...p, xp: data.profile.xp, level: data.profile.level }
+            : p
+        )
       )
-    )
+      setUserQuests((currentUserQuests) => [
+        ...currentUserQuests.filter((row) =>
+          row.user_id !== profile.id || row.quest_id !== quest.id
+        ),
+        data.completion,
+      ])
 
-    setUserQuests((currentUserQuests) => [
-      ...currentUserQuests,
-      ...(completedQuestData || []),
-    ])
-
-    alert(`Quest completed! +${quest.xp_reward} XP`)
+      alert(data.already_completed
+        ? 'This quest has already been completed.'
+        : `Quest completed! +${data.awarded_xp} XP`)
+    } catch (error) {
+      console.error('Quest completion error:', error)
+      // A lost response can follow a committed transaction; a retry is idempotent.
+      setCompletionError('Could not confirm quest completion. Please try again.')
+    } finally {
+      completionInFlight.current = false
+      setCompleting(false)
+    }
   }
 
   const currentProfile = profiles[0]
 
   const completedQuestIds = userQuests
     .filter((completedQuest) =>
-      currentProfile
-        ? completedQuest.user_id === currentProfile.id
-        : true
+      currentProfile &&
+      completedQuest.user_id === currentProfile.id &&
+      completedQuest.completed === true
     )
     .map((completedQuest) => completedQuest.quest_id)
 
@@ -241,6 +239,7 @@ function App() {
 
           <section className="section">
             <h2>Available Quests</h2>
+            {completionError && <p role="alert">{completionError}</p>}
             <div className="cardGrid">
               {availableQuests.length > 0 ? (
                 availableQuests.map((quest) => (
@@ -251,6 +250,7 @@ function App() {
 
                     <button
                       className="questButton"
+                      disabled={completing}
                       onClick={() => completeQuest(quest)}
                     >
                       Complete Quest

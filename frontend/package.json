@@ -7,7 +7,16 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:baseline": "vitest run src/App.test.jsx --outputFile=../docs/kyle/evidence/baseline-results.json",
+    "test:defects": "vitest run src/App.defects.test.jsx --outputFile=../docs/kyle/evidence/defect-results.json",
+    "test:coverage": "vitest run --coverage",
+    "test:database": "node --test database/complete-quest.test.js"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.106.2",
@@ -15,14 +24,22 @@
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.6.0",
     "@eslint/js": "^10.0.1",
+    "@testing-library/dom": "10.4.2",
+    "@testing-library/jest-dom": "8.0.0",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.13",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "5.1.1",
     "eslint": "^10.3.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
-    "vite": "^8.0.12"
+    "jsdom": "31.0.1",
+    "vite": "^8.0.12",
+    "vitest": "5.1.1"
   }
 }
