@@ -1,9 +1,19 @@
 # GitHub publication record
 
-Status: preparing a draft PR on tests/kyle-static-whitebox against main. The user authorized completing his testing contribution, reporting back to Bashir, and the necessary GitHub work.
+Published November 24, 2026 (America/New_York), through the connected GitHub account ching202.
 
-The draft includes local corrections and their deployment dependency. It must not be presented as an approved live deployment or completed human review. Kyle has said he has not yet read App.jsx and still needs to review the fixes.
+- Draft pull request: [#10 — Add Kyle's static and white-box testing with quest regression fixes](https://github.com/ching202/CoinQuest/pull/10)
+- Branch: [tests/kyle-static-whitebox](https://github.com/ching202/CoinQuest/tree/tests/kyle-static-whitebox), based on main ae78c7005733e36c0e08c5d921938a7873c3181a.
+- Implementation/test commit: [4edde503](https://github.com/ching202/CoinQuest/commit/4edde503354b4db0aab4edc68c912220f2a360e9).
+- Reports/evidence commit: [b8be4491](https://github.com/ching202/CoinQuest/commit/b8be4491b19b036de51eeb00433933e08d332a9f).
+- Handoff and review suggestions posted to Bashir: [PR #9 review](https://github.com/ching202/CoinQuest/pull/9#pullrequestreview-6049779347). The review is a COMMENT, not approval or a merge.
 
-Planned commits separate the implementation/test setup from the reports and evidence. Bashir's existing PR #9 and files are not modified. A handoff comment will link the draft and summarize the real results and remaining work.
+The publication was authorized by Kyle's request to complete his portion, report back to Bashir and handle the necessary GitHub work. The connected account and commit attribution were verified as ching202. Code, tests, reports and command execution were prepared with Codex assistance.
 
-Actual commit and PR links will be recorded here after publication is verified.
+## Draft status
+
+Kyle has stated that he has not yet read App.jsx and still needs to review the fixes. Manual review and technical AI-review decisions remain pending. The proposed SQL migration has not been applied to Supabase, and live verification remains pending. The draft is not a claim that these requirements or deployment are complete.
+
+Neither PR was merged. Bashir's source files were not changed. His handoff identifies the broken AI-document link, remaining actual black-box execution, stale notes and suggested defect statuses.
+
+See [MANUAL_REVIEW_GUIDE.md](MANUAL_REVIEW_GUIDE.md), [CONTRIBUTION_SUMMARY.md](CONTRIBUTION_SUMMARY.md) and [BASHIR_HANDOFF.md](BASHIR_HANDOFF.md) for next steps. The GitHub PR's Commits tab is the current full history, including publication-record updates.

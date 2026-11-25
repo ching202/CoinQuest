@@ -42,7 +42,7 @@ Line numbers refer to the archived original baseline file. Inspect the linked co
 - **Recommendation:** After inspecting the actual schema and policies, use an atomic database operation that records completion and updates XP together, with duplicate protection. Swapping the two client writes alone merely changes which partial result can remain.
 - **Related report:** Bashir's CQ-D001, BB-17, and SV-02 in PR #9.
 - **Confirmation design:** Start at XP 90, reward 10. Allow the profile update and fail the completion insert. Require stored XP to remain 90 when completion fails. Then verify successful completion and repeated attempts.
-- **Current status:** Locally corrected and retested. Original failure preserved; local SQL rollback passes. Live integration verification, correction commit and team acceptance remain pending.
+- **Current status:** Locally corrected and retested. Original failure preserved; local SQL rollback passes. Code is committed in draft PR #10; human review and live integration verification remain pending.
 
 ### ST-02: Completion classification ignores the completed flag
 
@@ -111,7 +111,7 @@ The record below distinguishes the guided discussion from a completed independen
 - ST-04 accepted / revised / rejected and target constraints: **Pending**
 - ESLint rerun and evidence checked: **Pending**
 - Corrections made by the assistant locally: **CQ-D001 and CQ-D002; Kyle's review pending**
-- Correction commits: **Pending**. Local confirmation: **37 component and 18 SQL cases pass**. Live verification: **Pending**.
+- Correction commits: **Published in draft PR #10; see GITHUB_HANDOFF.md**. Local confirmation: **37 component and 18 SQL cases pass**. Human review/live verification: **Pending**.
 
 ### Kyle's selected CQ-D001 explanation
 

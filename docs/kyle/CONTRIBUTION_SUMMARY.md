@@ -11,7 +11,7 @@ Working record for the final project; presentation work is deferred until both p
 | White-box testing | Kyle / ching202 | Real-component test suite, original 28 pass/2 fail, corrected 37 pass, coverage; code/tests prepared and executed with AI assistance |
 | Correction/confirmation support | Kyle, with Bashir reviewing | Two local corrections, SQL proposal and 18 passing local SQL cases; no live deployment |
 | AI-assisted testing | Kyle coordinating | Four actual activities and prompts recorded; selected explanation documented; technical review decisions pending |
-| Repository collaboration | Both | Bashir has PR #9; Kyle's branch/PR is being prepared, tracked in GITHUB_HANDOFF.md |
+| Repository collaboration | Both | Bashir has PR #9; Kyle has [draft PR #10](https://github.com/ching202/CoinQuest/pull/10) and separate implementation/report commits; handoff posted on #9 |
 | Presentation and demonstration | Both | Still to prepare; both partners must speak and participate |
 
 ## Kyle's observed participation
