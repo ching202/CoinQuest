@@ -1,0 +1,38 @@
+
+ RUN  v5.1.1 C:/Users/Ching/Documents/Codex/2026-11-24/th/work/CoinQuest-review/frontend
+
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-01 shows loading until the reads resolve
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-02 handles zero transaction iterations and empty quest lists
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-03 processes one income item, including a numeric string
+ Γ£ô src/App.test.jsx > App: statements, branches, and collection processing > WB-04 reduces multiple income/expense items without losing earlier amounts 99ms
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-05 takes the zero-income branch with expenses present
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-06 net 100 produces financial health 75 at the strict thresholds
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-06 net 101 produces financial health 90 at the strict thresholds
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-06 net 250 produces financial health 90 at the strict thresholds
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-06 net 251 produces financial health 100 at the strict thresholds
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-07 XP 98 / level 1 becomes XP 99 / level 1 after a one-XP quest
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-07 XP 99 / level 1 becomes XP 100 / level 2 after a one-XP quest
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-07 XP 100 / level 2 becomes XP 101 / level 2 after a one-XP quest
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-08 returns after a failed profile update, without inserting completion
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-09 returns without writes when there is no profile
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-10 classifies completed quests for the current profile only
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-11 achievement at XP 99 is Locked
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-11 achievement at XP 100 is Unlocked
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-11 achievement at XP 101 is Unlocked
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-12 leaves achievements locked when no profile is loaded
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-13 savings amount 99 displays capped progress 99%
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-13 savings amount 100 displays capped progress 100%
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-13 savings amount 101 displays capped progress 100%
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for profiles
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for quests
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for transactions
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for savings_goals
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for achievements
+ Γåô src/App.test.jsx > App: statements, branches, and collection processing > WB-14 characterizes the current error fallback for user_quests
+
+ Test Files  1 passed (1)
+      Tests  1 passed | 27 skipped (28)
+   Start at  18:35:04
+   Duration  2.14s (environment 68%, setup 18%, import 7%, tests 5%, transform 2%)
+
+JSON report written to C:/Users/Ching/Documents/Codex/2026-11-24/th/outputs/CoinQuest-live-demo/passing-results.json

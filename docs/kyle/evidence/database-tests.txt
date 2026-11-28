@@ -1,0 +1,26 @@
+✔ SQL-01 saves XP and completion together, leaving another profile unchanged (1932.8828ms)
+✔ SQL-D01 rolls back XP when completion insert fails after the profile update (12.4713ms)
+✔ SQL-D02 completes an existing false row without inserting a duplicate (7.6393ms)
+✔ SQL-D02 completes an existing null row without inserting a duplicate (9.8326ms)
+✔ SQL-02 rolls back the attempted reward and preserves an incomplete row on failure (6.8437ms)
+✔ SQL-03 retry awards XP once and retains one completion (10.0721ms)
+✔ SQL-04 different quests accumulate rewards using the latest stored XP (6.9372ms)
+✔ SQL-05 XP 98 plus one produces 99 at level 1 (12.0479ms)
+✔ SQL-05 XP 99 plus one produces 100 at level 2 (6.0382ms)
+✔ SQL-05 XP 100 plus one produces 101 at level 2 (9.4195ms)
+✔ SQL-06 rejects unavailable input 90000000-0000-4000-8000-000000000001/10000000-0000-4000-8000-000000000001 without writes (13.5837ms)
+✔ SQL-06 rejects unavailable input 00000000-0000-4000-8000-000000000001/90000000-0000-4000-8000-000000000001 without writes (8.8479ms)
+✔ SQL-06 rejects unavailable input null/10000000-0000-4000-8000-000000000001 without writes (12.7418ms)
+✔ SQL-06 rejects unavailable input 00000000-0000-4000-8000-000000000001/null without writes (6.7881ms)
+✔ SQL-07 rejects a negative reward without writes (8.9448ms)
+✔ SQL-08 unique index rejects duplicate profile/quest pairs (7.0925ms)
+✔ SQL-09 function uses invoker rights and a fixed empty search path (6.7114ms)
+✔ SQL-10 migration refuses pre-existing duplicates and preserves those rows (1022.7327ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3398.7542

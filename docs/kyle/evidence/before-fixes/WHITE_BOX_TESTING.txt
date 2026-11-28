@@ -1,0 +1,105 @@
+# White-box component testing
+
+**Owner:** Kyle Kitching
+
+**Run date:** November 24, 2026
+
+**Application baseline:** `ae78c7005733e36c0e08c5d921938a7873c3181a`
+
+**App.jsx SHA-256:** `ec2f40cf4e5b93c3aef148616888c4b37a9fa22adee3892d92ee164d2f2efd5c`
+
+**Preparation/execution:** AI-assisted; Kyle's personal review and rerun pending.
+
+## Approach and environment
+
+The tests import and render the real `App.jsx`. React state and effects execute normally in a jsdom document. Only the Supabase module is replaced with a controlled service. The test cases were selected from the source's statements, decisions, early returns, and array-processing paths, so they support white-box testing even though most assertions inspect rendered output.
+
+Verified environment: Windows, Node 24.22.3, npm 11.19.1, Vitest 5.1.1, V8 coverage 5.1.1, React Testing Library 16.3.3, and jsdom 31.0.1. The exact versions are locked in `frontend/package-lock.json`. npm was invoked using `pnpm dlx npm@11.19.1` in the assistant environment because standalone npm was absent from PATH. On a normal compatible Node/npm installation, use the npm commands below directly.
+
+The fixture adapter supports the App's read/order/update/filter/insert operations. It honors update equality filters, keeps simulated persisted state separate from React state, and returns inserted rows from insert().select(). It does not model database constraints, access policies, RPCs, transactions, retries, or concurrent users. Unexpected fetch calls throw. No Supabase URL or key is needed for these tests.
+
+## Commands
+
+From `frontend/`, with Node 24.22.3 recommended:
+
+```sh
+npm ci
+npm run lint
+npm run test:baseline
+npm test
+npm run test:coverage
+npm run build
+```
+
+- `test:baseline`: the 28 currently passing component cases; this is a subset, not final acceptance.
+- `test`: all 30 cases, including two failing defect reproductions. It currently returns exit code 1.
+- `test:defects`: just the two defect cases, for investigation.
+- `test:coverage`: all cases plus coverage, including a report when tests fail.
+- `test:watch`: reruns tests while files are edited; stop it with Ctrl+C.
+
+The baseline and defect subset scripts write their own JSON files. The full run writes `test-results.json`. Rerunning a command replaces its generated evidence, so preserve an original failure snapshot before recording a correction.
+
+## Test design and results
+
+Each row below identifies a test group. Parameterized groups expand into the separately reported cases shown in the count column. No cases are skipped or marked as expected-to-fail.
+
+| IDs | Source-based purpose | Inputs / expected outcomes | Cases | Actual status |
+| --- | --- | --- | ---: | --- |
+| WB-01 | Loading conditional | Hold reads; show loading, then show dashboard after release | 1 | Pass |
+| WB-02 | Zero iterations and empty-list branches | Empty transactions/quests -> zero totals/counts and empty-state text | 1 | Pass |
+| WB-03 | One transaction iteration, numeric conversion | Income "25.50" -> net $25.50, 100% rate, one income | 1 | Pass |
+| WB-04 | Multiple filter/reduce/map iterations | Income 1000+50; expenses 200+50 -> net 800, rate 76%, two of each type | 1 | Pass |
+| WB-05 | Zero-income branch and nonpositive financial balance | Expense 50, income none -> net -50, savings rate 0, health 50 | 1 | Pass |
+| WB-06 | Strict `>100` and `>250` health branches | Net 100/101/250/251 -> health 75/90/90/100 | 4 | Pass |
+| WB-07 | Successful writes, level boundary, conditional profile map | XP 98/99/100 + 1 -> XP 99/100/101 and level 1/2/2; exactly one completion; other profile unchanged | 3 | Pass |
+| WB-08 | Failed first-write early return | Profile update error -> no insert, no reward, unchanged screen | 1 | Pass |
+| WB-09 | No-profile early return | Available quest with no profile -> no writes | 1 | Pass |
+| WB-10 | Filter matching and nonmatching users | Current user's completed q1 is completed; other user's q2 stays available | 1 | Pass |
+| WB-11 | Achievement comparison | XP 99/100/101 for threshold 100 -> locked/unlocked/unlocked | 3 | Pass |
+| WB-12 | Missing-profile achievement branch | No profile -> achievement locked | 1 | Pass |
+| WB-13 | Savings cap and goal iteration | Saved 99/100/101 against target 100 -> 99%/100%/100% | 3 | Pass |
+| WB-14 | Six read-error checks and fallback branches | Fail each read in turn -> correct console error, completed loading, zero balance for the fixtures | 6 | Pass; characterization only |
+| WB-D01 / CQ-D001 | Failed second write and cross-state consistency | XP 90, reward 10, insert fails -> proposed requirement: stored XP stays 90; actual stored XP 100, screen XP 90 | 1 | **Fail** |
+| WB-D02 / CQ-D002 | Incomplete record classification | completed=false -> quest should be available; actual unavailable and listed completed | 1 | **Fail; schema support subsequently verified** |
+| **Total** | | | **30** | **28 pass; 2 fail; 0 skipped** |
+
+Expected values in the ordinary cases are independently written constants. Their behavioral rules remain subject to the team's agreement. WB-14 intentionally records the existing error fallback; passing it does not mean silent error feedback is desirable or that ST-03 is fixed.
+
+Kyle initially reported being unsure whether the Supabase project still existed or supported incomplete rows. After restoration, a read-only dashboard inspection confirmed `completed boolean null default false`. See [SCHEMA_REVIEW.md](SCHEMA_REVIEW.md). WB-D02 therefore uses a schema-supported state, while remaining a component test with a simulated service. It does not establish a live user workflow or database integration result. The original test title and saved run retain their historical "schema assumption" wording.
+
+## Statement, branch, and loop evidence
+
+- **Statements:** loading data, computing totals, updating a profile, inserting a completion, and rendering sections execute in the suite. Instrumented statement coverage is reported below.
+- **Branches:** positive/zero income, financial-health thresholds, profile-present/absent, read success/error, write success/error, achievement locked/unlocked, and quest empty/nonempty paths are exercised.
+- **Loops:** App.jsx has no explicit for/while loop. Its filter/reduce/map/some callbacks perform collection iteration. WB-02, WB-03, and WB-04 exercise zero, one, and multiple transaction records; WB-07 uses two profiles to cover both map outcomes. Coverage tools do not supply a separate loop-coverage percentage, so this input design is documented explicitly.
+
+## Measured coverage
+
+Generated by the full 30-case run, including the two failures:
+
+| Scope | Statements | Branches | Functions | Lines |
+| --- | ---: | ---: | ---: | ---: |
+| App.jsx | 96.73% (89/92) | 92.18% (59/64) | 96.00% (24/25) | 96.29% (78/81) |
+| All included application source | 92.70% (89/96) | 86.76% (59/68) | 96.00% (24/25) | 91.76% (78/85) |
+
+The whole-source denominator includes `main.jsx` and `supabase.js`; these are not exercised because App is mounted directly and the real service module is mocked. Tests and test helpers are excluded from the coverage denominator.
+
+Remaining App gaps include the duplicate-check callback and already-completed early return (lines 60, 65-66), the empty insert-response fallback (line 111), and the no-profile completion-filter fallback (line 121). A completed quest's button is removed from the rendered interface, so the ordinary user flow does not reach every defensive duplicate-check path. Rapid repeated clicks/concurrency and a testable completion service deserve follow-up; these are not claimed covered.
+
+No arbitrary coverage threshold was added: the assignment requires a report but specifies no percentage. High coverage does not close the two failed defect checks.
+
+## Evidence and limitations
+
+Saved text evidence is normalized to LF with trailing whitespace removed for portable Git patches. Test values, failure messages, and results are unchanged.
+
+- [Full run transcript](evidence/test-run.txt)
+- [Machine-readable full results](evidence/test-results.json)
+- [Coverage HTML](evidence/coverage/index.html)
+- [Coverage summary JSON](evidence/coverage/coverage-summary.json)
+- [LCOV report](evidence/coverage/lcov.info)
+- [Baseline-only run](evidence/baseline-run.txt)
+- [Static review](STATIC_TESTING.md)
+
+These are component tests in a simulated DOM, not browser execution, screenshots, or real Supabase integration. App.jsx remains unchanged and both defect reports remain open. A future atomic RPC correction will require updating the service mock and test setup to represent the new service boundary while retaining the consistency requirement.
+
+Before submission Kyle should read the cases, rerun them, record his own review decisions, and coordinate schema validation/correction/retesting with Bashir. The current full suite is red and is not a final quality-acceptance claim.

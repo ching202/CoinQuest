@@ -1,0 +1,70 @@
+# AI-assisted testing record
+
+**Status:** One actual assistance session documented; human review decisions pending. This does not claim three completed focused AI uses.
+
+**Subsequent evidence update:** After Kyle reopened the restored Supabase project, the assistant inspected two table definitions read-only. The completed column's false default is now verified; no positive-target check appears in the displayed savings-goal definition. SCHEMA_REVIEW.md records the observation and limits. Historical passages below retain the earlier state of knowledge. No live records or database rules were changed.
+
+## AI-01: App.jsx static review and source-based test setup
+
+**Date:** November 24, 2026
+
+**Tool:** Codex
+
+**User:** Kyle Kitching
+
+### Complete initiating prompt
+
+> Okay let's start on my portion. Help me do the static testing for App.jsx first, then set up the automated tests. Walk me through it so I understand what we're doing.
+
+### Context supplied and retrieved
+
+- Earlier assignment text: manual and automated static testing; at least four automated white-box cases with statements, branches, applicable loops, results and coverage; defect records; at least three focused AI uses with complete prompts and review decisions.
+- Confirmed division of work: Bashir owns planning, black-box testing, and defect documentation; Kyle owns static testing, white-box testing, and AI-assisted testing; presentation is shared.
+- CoinQuest source at `ae78c7005733e36c0e08c5d921938a7873c3181a`, specifically App.jsx, package/configuration files, and the existing lint/build commands.
+- Bashir's PR #9 at `9aff35273a4f0a3c406fef4967d14d1dde2881b3`, including CQ-D001 and CQ-D002 and their diagnostic limitations.
+- Actual local dependency, lint, build, component-test, and coverage outputs generated during this session.
+- Follow-up schema clarification from Kyle: "i'm unsure , should i give you access to the supabase ? it may be deleted by now. Unsure though". No live access or schema confirmation was supplied.
+
+### Activities supported and response use
+
+The assistant drafted a source-review report, set up Vitest/React Testing Library/jsdom and a mock service, wrote source-directed cases, executed the checks, and documented failures and coverage. The resulting source files and reports are in this repository. App.jsx was not corrected, and no GitHub comments/reviews/PRs were posted.
+
+The test result is 28 pass / 2 fail. The two failures reproduce proposed requirements for Bashir's existing defect reports. The second remains conditional on real schema validity. These observed outputs are not attributed to Kyle's own manual execution.
+
+### Assistant implementation decisions (not Kyle's sign-off)
+
+- Used the real React component and replaced the service boundary, rather than reusing the earlier pre-JSX diagnostic as a coverage suite.
+- Kept the failing requirements as ordinary failing assertions.
+- Included bootstrap/service source in whole-source coverage so the report shows their lack of execution.
+- Kept schema-dependent findings conditional and preserved Bashir's defect IDs and credit.
+- Saved dependency-audit findings; did not silently upgrade existing application/build dependencies.
+
+### Kyle's required review decisions
+
+- Selected wording: Kyle explicitly selected the AI-drafted CQ-D001 explanation reproduced in STATIC_TESTING.md. This records a wording choice, not approval of a repair or a claim of independent manual execution.
+- Accepted technical recommendations and why: **Pending Kyle's review**
+- Revised suggestions and why: **Pending Kyle's review**
+- Rejected suggestions and why: **Pending Kyle's review**
+- Source sections personally checked: **Pending**
+- Commands personally rerun and observed results: **Pending**
+- How the response changed Kyle's testing work: **Pending Kyle's account**
+
+### Guided follow-up activity
+
+Kyle requested: "Can you do the test and I watch, then explain in my own words after?" The assistant ran the selected passing calculation case and the XP failure in a visible terminal. At Kyle's request the assistant supplied a short explanation; Kyle then explicitly asked to remember that wording. A later visible run demonstrated the incomplete-quest case. Kyle provided its console output and asked, "This was results. does explanation match?" The assistant matched the missing-button and present-completed-card assertions to the explanation, while retaining the schema limitation.
+
+The current follow-up reviews the saved coverage and remaining static findings. These follow-ups are recorded as assistance within this session; they are not being used to manufacture a claim of three complete, independently reviewed focused AI-use records. Actual demo logs are saved under evidence/demonstrations/ and the review is summarized in REVIEW_SESSION.md.
+
+### Remaining focused AI work
+
+Later sessions can review a proposed correction against the actual schema and analyze final coverage gaps. Save each actual complete prompt, supplied context, response, use, decisions, and verification. Future prompts or activities must not be reported as already performed.
+
+## Continuing correction work within this assistance session
+
+Actual follow-up prompt: "continue". Context: the prior schema review recommended checking completed === true, reusing incomplete rows, and making reward/completion atomic; the original demonstrations and selected explanation were available. This follow-up is recorded within the existing session, not presented as a fabricated new focused prompt.
+
+The assistant implemented local App changes, an invoker-rights SQL migration, component regression cases, and 18 local PGlite SQL cases. It preserved the red baseline and ran lint, build, 37 component cases with coverage, and 18 SQL cases; all current checks passed. A visible demonstration reran SQL-D01 and CQ-D002 and both passed. The dashboard connection failed before the added function/trigger/index inspection, so live deployment and integration verification remain pending.
+
+Assistant decisions: return authoritative server values, make retries idempotent, prevent overlapping actions in one screen, retain false/null rows until completion, fail migration on duplicates instead of deleting them, and use actual SQL execution to check rollback separately from the service mock. See CORRECTION_REVIEW.md for sources and limits.
+
+Kyle's acceptance/revision/rejection of these corrections and personal rerun: **Pending**. The wording explanation supplied after correction remains AI-drafted unless Kyle explicitly selects/revises it. Nothing has been posted to GitHub or sent to Bashir.
