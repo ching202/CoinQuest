@@ -1,0 +1,69 @@
+{
+  "sourceSha256": "ec2f40cf4e5b93c3aef148616888c4b37a9fa22adee3892d92ee164d2f2efd5c",
+  "execution": "Original App.jsx logic before JSX return, in Node VM with fake hooks and simulated database; no UI rendering or real database.",
+  "node": "v24.22.3",
+  "results": [
+    {
+      "id": "SV-01",
+      "expected": "Incomplete record remains available, subject to Kyle confirming completed=false semantics.",
+      "actual": {
+        "available": 0,
+        "completed": 1
+      },
+      "finding": "Record with completed:false is classified as completed."
+    },
+    {
+      "id": "SV-02",
+      "expected": "Failed quest completion does not retain a reward without a completion record.",
+      "actual": {
+        "storedXP": 100,
+        "storedLevel": 2,
+        "completionRows": 0,
+        "displayStateXP": 90,
+        "errors": [
+          [
+            "User quest insert error:",
+            {
+              "message": "Simulated user_quests insert failure"
+            }
+          ]
+        ]
+      },
+      "finding": "Profile update persists in stub before insert failure; component state retains old XP."
+    },
+    {
+      "id": "SV-03",
+      "expected": "Unavailable financial data is distinguished from a true zero balance; proposed usability expectation.",
+      "actual": {
+        "income": 0,
+        "expenses": 0,
+        "net": 0,
+        "errors": [
+          [
+            "Transactions error:",
+            {
+              "message": "Simulated transactions read failure"
+            }
+          ]
+        ]
+      },
+      "finding": "Read failure falls back to empty transaction state and zero calculations."
+    },
+    {
+      "id": "SV-04",
+      "expected": {
+        "income": 1000,
+        "expenses": 250,
+        "net": 750,
+        "savingsRate": 75
+      },
+      "actual": {
+        "income": 1000,
+        "expenses": 250,
+        "net": 750,
+        "savingsRate": 75
+      },
+      "finding": "Diagnostic values match this arithmetic example."
+    }
+  ]
+}
