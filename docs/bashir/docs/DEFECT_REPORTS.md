@@ -1,75 +1,231 @@
 # CoinQuest — My Defect Reports
 
 **Author:** Bashir Abdulkadir  
-**Status note:** These reports are based on source review and AI-executed diagnostic checks. They are not presented as defects reproduced by me in a browser or against Kyle's live database. I will review the expected behavior and schema with Kyle before final triage.
+**Partner:** Kyle Kitching  
+**Course:** AD361 — Application Testing  
+**Last updated:** November 27, 2026
+
+## My testing and evidence
+
+I documented two defects found through AI-assisted source review and
+simulated diagnostic checks. Kyle later added component tests, local SQL
+tests, and proposed corrections in PR #10.
+
+I personally reran the corrected automated checks on Windows at commit:
+
+6582a3bc0e90a158b6428b7af431c150f9706012
+
+My results were:
+
+- ESLint: passed.
+- Component tests: 37 passed, 0 failed.
+- Local SQL tests: 18 passed, 0 failed.
+- Production build: passed.
+
+These results confirm the local automated checks passed. They do not
+establish that the corrections work against the live Supabase database.
+My browser confirmation and live integration verification remain pending.
 
 ## My severity and priority rules
 
-Severity describes impact: High means major functional/data inconsistency, Medium means a limited functional error, and Low means minor presentation impact. Priority describes repair urgency: P1 before final acceptance, P2 next available repair slot, and P3 lower urgency. The assignments below are proposed for team review.
+Severity describes the impact of a defect:
 
-## CQ-D001 — XP update can succeed when quest completion is not recorded
+- High: major functional or data inconsistency.
+- Medium: limited functional behavior is incorrect.
+- Low: minor presentation or usability issue.
 
-| Required field | My report |
-| --- | --- |
-| Defect ID/title | CQ-D001 — XP update can succeed when quest completion is not recorded. |
-| Related test/review | BB-17; source review of completeQuest; diagnostic SV-02. |
-| Environment | Original frontend/src/App.jsx from supplied archive; Linux, Node v24.22.3; simulated hooks and Supabase-compatible response stub. No browser or real Supabase calls. Source hash is in source_verification.json. |
-| Code location | frontend/src/App.jsx lines 69–99: profile update at 72–78, completion insert at 85–94, return on insert error at 96–99. |
-| Expected result | My proposed consistency requirement is that a failed quest completion must not leave a permanent XP reward without a corresponding completion record. Kyle and I must agree on the recovery policy. |
-| Actual result | With initial XP 90 and reward 10, the profile update stores XP 100 and level 2 in the stub. The forced user_quests insert failure leaves zero completion rows. The component's profile state still holds XP 90. |
-| Severity | High — the workflow can leave reward and completion state inconsistent. Actual database impact remains to be confirmed. |
-| Priority | P1 proposed — resolve or explicitly assess before accepting quest completion as reliable. |
-| Status | Open — reproduced in simulated source execution; integration confirmation pending; no correction applied. |
+Priority describes repair urgency:
 
-### My reproduction steps
+- P1: address before accepting the affected feature.
+- P2: address in the next planned repair.
+- P3: lower urgency.
 
-1. I prepare a synthetic profile p1 with XP 90 and level 1, a quest q1 with reward 10, and no completed record.
-2. I allow the profiles update to succeed and configure only the user_quests insert to return an error.
-3. I invoke the original completeQuest workflow through the diagnostic runner.
-4. I compare the stored profile, completion rows, and component state.
-5. I observe stored XP 100, level 2, zero completion rows, and component-state XP 90 in SV-02.
+The severity and priority assignments below are my proposed assessments.
 
-To reproduce the preserved diagnostic, I run `node evidence/verify_source.cjs /path/to/CoinQuest-main/frontend/src/App.jsx` from the package root. The script reports observations; it is not an assertion-based browser test. I will have Kyle repeat the failure safely using the real test service and inspect state after reloading.
-
-### My recommended correction and retest
-
-I recommend that Kyle evaluate a database transaction/RPC that records completion and updates XP atomically, with duplicate protection. Simply reordering the two client writes can create the opposite partial-write problem. The final implementation depends on the actual schema and policies.
-
-I will force the second operation to fail again and confirm that no incomplete reward remains, then test one successful completion and a repeated attempt. **Correction commit:** none. **Confirmation result:** Not Run. **Final disposition:** Open.
-
-## CQ-D002 — A user-quest record marked incomplete is treated as completed
+## CQ-D001 — XP can be awarded without a recorded quest completion
 
 | Required field | My report |
 | --- | --- |
-| Defect ID/title | CQ-D002 — A user-quest record marked incomplete is treated as completed. |
-| Related test/review | BB-16; source review of completion classification/duplicate check; diagnostic SV-01. |
-| Environment | Same isolated source-diagnostic environment as CQ-D001. Synthetic user_quests data includes completed=false. Whether Kyle's schema permits this state needs confirmation. |
-| Code location | frontend/src/App.jsx lines 119–125 classify matching rows without checking completed; lines 58–62 use the same ID-only logic for duplicate prevention. |
-| Expected result | If completed=false means an incomplete quest, I expect it to remain available and not appear in Completed Quests. This expectation is conditional on Kyle confirming the field semantics and allowed data state. |
-| Actual result | For p1/q1 with completed=false, SV-01 reports zero available quests and one completed quest. Source review also shows that the duplicate check ignores completed. |
-| Severity | Medium proposed — an incomplete quest may be unavailable to finish and be displayed incorrectly. |
-| Priority | P2 proposed — confirm schema semantics, then repair if incomplete rows are supported. |
-| Status | Open — source behavior reproduced with synthetic data; requirement/schema validation and integration reproduction pending. No correction applied. |
+| Defect ID and title | CQ-D001 — XP can be awarded without a recorded quest completion. |
+| Related test or review | BB-17; original diagnostic SV-02; component regression WB-D01; local SQL regression SQL-D01. |
+| Original environment | Original App.jsx from the supplied archive; Linux and Node v24.22.3; simulated hooks and database responses. This was an AI-executed diagnostic, not my browser reproduction. |
+| My retest environment | Windows PowerShell 5.1; Node v25.2.1; npm v11.6.2; local component tests and PGlite SQL tests at commit 6582a3bc0e90a158b6428b7af431c150f9706012. |
+| Original code location | frontend/src/App.jsx, original lines 69–99. The profile update occurred before the completion insert. These references apply to the original source, not necessarily the corrected file. |
+| Expected result | Quest completion and its XP reward should be saved together. If completion fails, the operation should not leave an XP reward without a completion record. |
+| Original actual result | Starting with 90 XP and a reward of 10, the simulated profile update stored 100 XP and level 2. The following completion insert failed, leaving no completion record while the component state still showed 90 XP. |
+| Severity | High — reward and completion records can become inconsistent. Live database impact has not been reproduced. |
+| Priority | P1 — address before accepting quest completion as reliable. |
+| Current status | Locally corrected and retested. My automated rerun passed; browser confirmation and live integration verification remain pending. Not closed. |
 
-### My reproduction steps
+### Original reproduction procedure
 
-1. I prepare profile p1 and quest q1.
-2. I supply a matching user_quests row containing user_id p1, quest_id q1, and completed=false.
-3. I execute the original filtering logic through the diagnostic runner.
-4. I inspect availableQuests and completedQuests.
-5. I observe available count 0 and completed count 1 in SV-01.
+The original diagnostic used these steps:
 
-### My recommended correction and retest
+1. Prepare a synthetic profile with 90 XP and level 1.
+2. Prepare an available quest with a reward of 10 XP.
+3. Allow the profile update to succeed.
+4. Force the following user_quests insert to fail.
+5. Compare the stored profile, completion records, and component state.
 
-If incomplete rows are valid, I recommend checking the completed flag when deriving completed quests and preventing duplicates. Kyle must decide whether completing an existing incomplete row should update it rather than insert another row, because database uniqueness rules may matter. If the schema intentionally allows only completed rows and enforces that rule, I will document this as an unsupported-data robustness finding instead of a confirmed normal-use defect.
+The original observation was stored XP 100, no completion record, and
+component-state XP 90. I retain the original diagnostic evidence in:
 
-I will compare true, false, and absent completion records for the same user, check a different user's record, and complete a legitimate available quest. **Correction commit:** none. **Confirmation result:** Not Run. **Final disposition:** Open pending team triage.
+- evidence/source_verification.json — SV-02.
+- evidence/verify_source.cjs — original diagnostic runner.
 
-## My defect summary
+Kyle also preserved the original real-component failures in
+docs/kyle/evidence/before-fixes/ on his PR #10 branch.
 
-| ID | Diagnostic observation | Integration reproduction | Fix/retest |
-| --- | --- | --- | --- |
-| CQ-D001 | Reproduced with forced insert failure | Pending | No fix; retest Not Run |
-| CQ-D002 | Reproduced with completed=false fixture | Pending; allowed state must be confirmed | No fix; retest Not Run |
+### Correction
 
-I have not closed either report. I will preserve the original evidence and add actual environment details, correction commits, and confirmation results as the team completes the work.
+Kyle replaced the separate client-side writes with one database RPC
+designed to update XP and record completion atomically.
+
+His correction includes rollback behavior and protection against
+duplicate rewards. The proposed SQL migration has not been applied to
+Supabase according to his handoff, and the corrected frontend depends
+on that migration.
+
+Correction reference: PR #10, tests/kyle-static-whitebox.
+
+My tested snapshot is commit:
+
+6582a3bc0e90a158b6428b7af431c150f9706012
+
+This is the snapshot I tested, not a claim that this documentation
+commit originally introduced the code fix.
+
+### My confirmation and regression results
+
+I ran:
+
+- npm run test:coverage
+- npm run test:database
+
+All 37 component cases and 18 local SQL cases passed.
+
+The passing SQL-D01 case forces completion insertion to fail after the
+XP update and checks rollback. The passing SQL-03 case checks that a
+retry awards XP only once and retains one completion record.
+
+These checks support the local correction. They do not replace my
+browser confirmation or verify the deployed Supabase environment.
+
+### Remaining work
+
+I will confirm the migration dependency with Kyle and verify the
+workflow in an approved test environment. I will check successful
+completion, failure recovery, reload behavior, and repeated requests.
+
+**Final disposition:** Locally corrected and retested; browser and live
+integration verification pending.
+
+## CQ-D002 — An incomplete quest record is treated as completed
+
+| Required field | My report |
+| --- | --- |
+| Defect ID and title | CQ-D002 — An incomplete quest record is treated as completed. |
+| Related test or review | BB-16; original diagnostic SV-01; component regression tests; SQL-D02 tests for false/null completion rows. |
+| Original environment | Original App.jsx; Linux and Node v24.22.3; synthetic data with completed=false and simulated database responses. This was an AI-executed diagnostic. |
+| My retest environment | Windows PowerShell 5.1; Node v25.2.1; npm v11.6.2; local component tests and PGlite SQL tests at commit 6582a3bc0e90a158b6428b7af431c150f9706012. |
+| Original code location | frontend/src/App.jsx, original lines 119–125 classified matching records without checking completed. Original lines 58–62 also checked matching IDs without checking the completion flag. |
+| Expected result | A record marked completed=false or completed=null should not be treated as a completed quest. Completion should handle an existing incomplete record without creating a duplicate. |
+| Original actual result | A matching record with completed=false produced zero available quests and one completed quest in the source diagnostic. |
+| Schema evidence | Kyle reported read-only inspection showing completed is a nullable boolean with default false. This supports the test state but is not a live reproduction. |
+| Severity | Medium — an incomplete quest can be displayed as completed and become unavailable to finish. |
+| Priority | P2 — correct the classification and handling of incomplete records. |
+| Current status | Locally corrected and retested. My automated rerun passed; browser confirmation and live integration verification remain pending. Not closed. |
+
+### Original reproduction procedure
+
+The original diagnostic used these steps:
+
+1. Prepare synthetic profile p1 and quest q1.
+2. Add a matching user_quests record with completed=false.
+3. Execute the original quest-classification logic.
+4. Inspect the available and completed quest lists.
+5. Observe that q1 is classified as completed instead of available.
+
+I retain the original diagnostic evidence in:
+
+- evidence/source_verification.json — SV-01.
+- evidence/verify_source.cjs — original diagnostic runner.
+
+### Correction
+
+Kyle added explicit completion-flag checks so incomplete records do not
+count as completed.
+
+The corrected database workflow also handles existing false/null
+records by reusing them instead of inserting a duplicate.
+
+Correction reference: PR #10, tests/kyle-static-whitebox.
+
+My tested snapshot is commit:
+
+6582a3bc0e90a158b6428b7af431c150f9706012
+
+### My confirmation and regression results
+
+My automated rerun completed successfully:
+
+- All 37 component cases passed.
+- All 18 local SQL cases passed.
+- SQL-D02 passed for an existing completed=false record.
+- SQL-D02 passed for an existing completed=null record.
+- SQL-08 passed for duplicate profile/quest rejection.
+- SQL-10 passed for migration rejection of pre-existing duplicates.
+
+Kyle's component report also describes checking that an incomplete
+quest stays available and can then be completed.
+
+These results support the local correction. I have not yet recorded
+the corresponding browser observations or live integration results.
+
+### Remaining work
+
+I will verify available/completed display behavior using controlled
+test data, confirm completion of an incomplete record, and check the
+result after reloading.
+
+**Final disposition:** Locally corrected and retested; browser and live
+integration verification pending.
+
+## My retest summary
+
+| Defect | Original finding | My local automated retest | Browser/live verification | Status |
+| --- | --- | --- | --- | --- |
+| CQ-D001 | XP persisted after failed completion insertion. | Related component and SQL checks passed. | Pending. | Locally corrected and retested; not closed. |
+| CQ-D002 | Incomplete record was classified as completed. | Related component and false/null SQL checks passed. | Pending. | Locally corrected and retested; not closed. |
+
+## Environment limitations
+
+My run used Node v25.2.1. Installation produced unsupported-engine
+warnings because this version is outside the project's declared
+supported versions. The checks still passed, but I will record this
+limitation and use a supported version for subsequent validation.
+
+npm also reported 11 dependency vulnerabilities: 4 moderate and 7 high.
+These require assessment. I have not run npm audit fix or changed the
+dependencies as part of this retest.
+
+## Other open findings
+
+Kyle's ST-03 and ST-04 remain open:
+
+- ST-03: failed reads can appear as empty or zero data.
+- ST-04: zero-target savings calculations need handling.
+
+I am not claiming that either finding has been corrected.
+
+## My evidence and contribution
+
+I retain my original defect reports and diagnostic evidence, credit
+Kyle's correction work, and record my own successful local rerun.
+
+The local automated results do not complete my black-box browser
+testing. I still need at least six executed black-box cases across two
+techniques, with actual results and evidence.
+
+Neither defect is marked closed, and I am not claiming that the SQL
+migration has been deployed or that live integration has passed.
